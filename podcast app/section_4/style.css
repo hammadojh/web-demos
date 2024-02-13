@@ -1,0 +1,26 @@
+body {
+    background-color: #1F1D2B;
+    margin: 0px;
+    font-family: "Inter";
+    color: white;
+}
+
+video {
+    height: 100vh;
+    width: 100vw;
+    object-fit: cover;
+    opacity: 0.2;
+}
+
+form {
+    background-color: red;
+}
+
+input[type=email] {
+    padding: 16px 20px;
+    background-color: #252836;
+    border: white solid 1px;
+    border-radius: 16px;
+    width: 100%;
+    box-sizing: border-box;
+}
