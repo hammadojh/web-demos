@@ -3,6 +3,8 @@ body {
     margin: 0px;
     font-family: "Inter";
     color: white;
+    text-align: center;
+    ;
 }
 
 video {
@@ -10,6 +12,27 @@ video {
     width: 100vw;
     object-fit: cover;
     opacity: 0.2;
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+#logo-image {
+    width: 100px;
+    position: absolute;
+    top: 40%;
+    left: calc(50% - 50px);
+}
+
+form {
+    margin: 34px 24px;
+    text-align: center;
+    position: absolute;
+    bottom: 0;
+}
+
+form * {
+    margin-bottom: 13px;
 }
 
 input[type=email] {
@@ -19,6 +42,22 @@ input[type=email] {
     border-radius: 16px;
     width: 100%;
     box-sizing: border-box;
+    font-size: 12pt;
+}
+
+input[type="submit"] {
+    padding: 10px 20px;
+    border-radius: 16px;
+    width: 100%;
+    font-weight: bold;
+    font-size: 18pt;
+    border: none;
+}
+
+a {
+    color: white;
+    text-decoration: none;
+    font-size: 16pt;
 }
 
 
