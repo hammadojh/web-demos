@@ -12,10 +12,6 @@ video {
     opacity: 0.2;
 }
 
-form {
-    background-color: red;
-}
-
 input[type=email] {
     padding: 16px 20px;
     background-color: #252836;
@@ -24,3 +20,9 @@ input[type=email] {
     width: 100%;
     box-sizing: border-box;
 }
+
+
+/* TODO */
+/* STYLE THE INPUT (Concepts: attribute selector, shorthand, variables) */
+/* BUTTON STYLING (Concepts: class selector) */
+/* FORM STYLING (Concepts: descendant selectors, display, collapse, :hover, special selectors) */
