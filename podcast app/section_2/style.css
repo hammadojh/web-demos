@@ -3,15 +3,21 @@
 
 body {
     background-color: #1F1D2B;
-    margin: 0px;
     font-family: "Inter";
+    margin: 24px;
 }
 
-video {
+video.cover {
+    position: fixed;
+    left: 0px;
+    top: 0px;
     height: 100vh;
-    width: 100vw;
     object-fit: cover;
     opacity: 0.2;
+}
+
+#splash {
+    margin: 0px;
 }
 
 body,
@@ -20,38 +26,36 @@ a {
 }
 
 #logo {
-    width: 100px;
+    position: absolute;
     left: calc(50% - 50px);
     top: 30%;
+    width: 100px;
 }
 
-form {
+form.bottom {
+    position: absolute;
     width: 100%;
-    padding: 20px;
     text-align: center;
-    bottom: 0px;
+    bottom: 24px;
+    padding: 24px;
     box-sizing: border-box;
 }
 
-input[type="text"] {
-    width: 100%;
-    padding: 16px 0px 16px 20px;
-    box-sizing: border-box;
-}
 
 input {
     width: 100%;
     border-radius: 16px;
     margin-bottom: 10px;
+    box-sizing: border-box;
 }
 
-input[type="text"] {
+input[type="text"],
+input[type="search"] {
     padding: 16px 20px;
     border-width: 1px;
     border-color: white;
     border-style: solid;
     background-color: #1F1D2B;
-    box-sizing: border-box;
     font-size: 12pt;
 }
 
@@ -65,4 +69,34 @@ input[type="submit"] {
 a {
     font-size: 16pt;
     text-decoration: none;
+}
+
+.cards {
+    display: grid;
+    grid-template-columns: auto auto;
+    gap: 12px;
+}
+
+.cards img {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.cards h4 {
+    margin: 0px 0px 4px 0px;
+}
+
+.cards h6 {
+    margin: 0px;
+}
+
+nav {
+    margin: 24px 0px;
+}
+
+nav.logo-nav {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    justify-items: center;
 }

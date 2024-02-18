@@ -2,45 +2,36 @@
 <html>
 
 <head>
-    <style>
-        body {
-            background-color: #1F1D2B;
-            color: white;
-        }
-
-        button {
-            background-color: transparent;
-            border: none;
-            color: white;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
     <header>
         <!-- Naigation -->
-        <nav>
-            <button><img src="../assets/menu.svg" alt=""></button>
-            <img src="../assets/podcast_logo.svg" alt="">
-            <button><img src="../assets/notification.svg" alt=""></button>
+        <nav class="logo-nav">
+            <a><img src="../assets/menu.svg" alt=""></a>
+            <img class="logo-img" src="../assets/Podk.svg" alt="">
+            <a><img src="../assets/notification.svg" alt=""></a>
         </nav>
         <!-- Search bar -->
         <form action="#">
             <input type="search" name="search" id="search" placeholder="search..">
         </form>
-        <!-- List of tags -->
-        <ul>
-            <li><button>all</button></li>
-            <li><button>life</button></li>
-            <li><button>comedy</button></li>
-            <li><button>tech</button></li>
-        </ul>
-        <!-- Tracks -->
-        <main>
-            <h2>
-                Trending
-            </h2>
-            <!-- Card -->
+    </header>
+    <!-- List of tags -->
+    <ul>
+        <li><a>all</a></li>
+        <li><a>life</a></li>
+        <li><a>comedy</a></li>
+        <li><a>tech</a></li>
+    </ul>
+    <!-- Tracks -->
+    <main>
+        <h2>
+            Trending
+        </h2>
+        <!-- Card -->
+        <div class="cards">
             <div>
                 <a href="track.html"><img src="../assets/person_1.png" alt="Cover Image"></a>
                 <h4>The missing 96 percent of the universe</h4>
@@ -64,8 +55,8 @@
                 <h4>The missing 96 percent of the universe</h4>
                 <h6>Claire Malone</h6>
             </div>
-        </main>
-    </header>
+        </div>
+    </main>
 </body>
 
 </html>
