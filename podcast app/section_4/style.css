@@ -124,9 +124,43 @@ nav .nav-icon {
     background-color: #565B82;
 }
 
+@media (min-width:768px) {
 
-/* TODO */
-/* STYLE THE INPUT (Concepts: attribute selector, shorthand, variables) */
-/* BUTTON STYLING (Concepts: class selector) */
-/* FORM STYLING (Concepts: descendant selectors, display, collapse, :hover, special selectors) */
-/* Page Layout (concepts: main flow, absolute, relative and fixed positions)*/
+    body {
+        display: grid;
+        grid-template-columns: 50% 50%;
+        justify-items: center;
+        align-items: center;
+        margin: 0px;
+        box-sizing: border-box;
+        height: 100vh;
+    }
+
+    .video-section {
+        padding: 24px 0px 24px 24px;
+        box-sizing: border-box;
+        height: 100%;
+    }
+
+    #logo-image {
+        left: calc(25% - 50px);
+        top: calc(50% - 25px)
+    }
+
+    video {
+        width: 100%;
+        object-fit: cover;
+        border-radius: 50px;
+        height: 100%;
+    }
+
+
+    form.bottom,
+    video {
+        position: static;
+    }
+
+    form {
+        max-width: 400px;
+    }
+}
