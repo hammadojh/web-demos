@@ -1,0 +1,103 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+
+body {
+    background-color: #1F1D2B;
+    margin: 0px;
+    font-family: "Inter";
+}
+
+video {
+    position: fixed;
+    height: 100vh;
+    width: 100vw;
+    object-fit: cover;
+    opacity: 0.2;
+}
+
+body,
+a {
+    color: white
+}
+
+form {
+    width: 100%;
+    padding: 20px;
+    text-align: center;
+    position: absolute;
+    bottom: 0px;
+    box-sizing: border-box;
+}
+
+input {
+    width: 100%;
+    border-radius: 16px;
+    margin-bottom: 10px;
+}
+
+input[type="text"] {
+    border-width: 1px;
+    border-color: white;
+    border-style: solid;
+    background-color: #1F1D2B;
+    box-sizing: border-box;
+    font-size: 12pt;
+}
+
+input[type="submit"] {
+    border: none;
+    font-size: 1em;
+    font-weight: bold;
+}
+
+input[type="submit"]:hover {
+    background-color: aliceblue;
+}
+
+a {
+    font-size: 1em;
+    text-decoration: none;
+}
+
+#logo {
+    position: absolute;
+    width: 100px;
+    left: calc(50% - 50px);
+    top: 30%;
+}
+
+@media (min-width: 425px) {
+
+    video,
+    form {
+        position: static;
+    }
+
+    #logo {
+        position: absolute;
+        left: calc(25% - 50px);
+        top: 45%;
+    }
+
+    video {
+        width: 100%;
+        padding: 25px 25px 25px 25px;
+        box-sizing: border-box;
+        border-radius: 64px;
+    }
+
+
+    body {
+        display: grid;
+        grid-template-columns: 50% 50%;
+        justify-items: center;
+        align-items: center;
+    }
+
+    form {
+        padding-left: 0px;
+    }
+
+    input {
+        max-width: 375px;
+    }
+}

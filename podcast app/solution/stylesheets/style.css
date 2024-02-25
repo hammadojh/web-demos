@@ -1,0 +1,53 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+
+body {
+    background-color: #1F1D2B;
+    margin: 0px;
+    font-family: "Inter";
+}
+
+video {
+    position: absolute;
+    height: 100vh;
+    width: 100vw;
+    object-fit: cover;
+    opacity: 0.2;
+}
+
+body,
+a {
+    color: white
+}
+
+input {
+    width: 100%;
+    border-radius: 16px;
+    margin-bottom: 10px;
+}
+
+input[type="text"],
+input[type="search"] {
+    padding: 16px 0px 16px 20px;
+    border-width: 1px;
+    border-color: white;
+    border-style: solid;
+    background-color: #1F1D2B;
+    box-sizing: border-box;
+    font-size: 12pt;
+}
+
+input[type="submit"] {
+    border: none;
+    font-size: 18pt;
+    font-weight: bold;
+    padding: 16px 20px;
+}
+
+input[type="submit"]:hover {
+    background-color: aliceblue;
+}
+
+a {
+    font-size: 16pt;
+    text-decoration: none;
+}
