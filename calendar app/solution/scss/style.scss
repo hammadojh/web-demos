@@ -7,3 +7,28 @@ $btn-padding-y-lg:12px;
 
 // import bootstrap
 @import "../bootstrap/scss/bootstrap";
+
+//Other CSS
+html {
+    height: 100%;
+}
+
+section {
+    border-left: 1px solid black;
+}
+
+.form-check-input {
+    border-width: 2px;
+}
+
+#new_task_input:focus {
+    box-shadow: none !important;
+}
+
+.card.checked{
+    opacity: 0.5;
+}
+
+.card.checked * {
+    text-decoration: line-through;
+}
