@@ -32,3 +32,15 @@ section {
 .card.checked * {
     text-decoration: line-through;
 }
+
+.draggable-item {
+      cursor: move;
+      border: 1px solid #ccc;
+      padding: 10px;
+      margin-bottom: 5px;
+}
+
+.dropover{
+    border-radius: 20px;
+    border: 3px dashed #3A00E5;
+}
