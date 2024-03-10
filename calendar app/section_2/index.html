@@ -8,8 +8,8 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"
         defer></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
     <script src="script.js" defer></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
     <title>Calendar App</title>
 </head>
 
@@ -18,9 +18,17 @@
         <main class="row h-100 row-cols-1 row-cols-xxl-4 row-cols-md-2">
             <!-- ALL TASKS SCREEN -->
             <section id="all_tasks" class="p-4 border-start-0">
-                <h1 class="fw-bold mb-4">All Tasks</h1>
-                <div class="cards vstack gap-3 mb-4">
+                <div class="hstack mb-4 justify-content-between">
+                    <h1 class="fw-bold">All Tasks</h1>
 
+                    <div class="btn-group" role="group">
+                        <input type="radio" class="btn-check" name="sortradio" id="sortdate" value="due" checked>
+                        <label class="btn btn-outline-secondary" for="sortdate">Due Date</label>
+                        <input type="radio" class="btn-check" name="sortradio" id="sortduration" value="duration">
+                        <label class="btn btn-outline-secondary" for="sortduration">Duration</label>
+                    </div>
+                </div>
+                <div class="cards vstack gap-3 mb-4 dropZone">
                 </div>
                 <!-- New task button -->
                 <button type="button" class="btn btn-lg btn-primary hstack gap-2" id="new_task_btn">
@@ -30,18 +38,30 @@
             </section>
 
             <!-- SCHEDULED TASKS -->
-            <section id="scheduled_tasks" class="p-4 d-none d-md-block">
-                <h1>Today</h1>
+            <section id="today" class="p-4 d-none d-md-block">
+                <div class="hstack mb-4 justify-content-between">
+                    <h1 class="fw-bold">Today</h1>
+                </div>
+                <div class="cards vstack gap-3 mb-4 dropZone h-100">
+                </div>
             </section>
 
             <!-- TOMORROW -->
             <section id="tomorrow" class="p-4 d-none d-xxl-block">
-                <h1>Tomorrow</h1>
+                <div class="hstack mb-4 justify-content-between">
+                    <h1>Tomorrow</h1>
+                </div>
+                <div class="cards vstack gap-3 mb-4 dropZone h-100">
+                </div>
             </section>
 
             <!-- NEXT WEEK -->
             <section id="next_week" class="p-4 d-none d-xxl-block">
-                <h1>Next Week</h1>
+                <div class="hstack mb-4 justify-content-between">
+                    <h1>Next Week</h1>
+                </div>
+                <div class="cards vstack gap-3 mb-4 dropZone h-100">
+                </div>
             </section>
 
             <!-- SETTING -->
