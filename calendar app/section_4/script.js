@@ -153,19 +153,12 @@ function openNewTaskBox() {
 // create task html
 
 function createTaskCard(task) {
-  // create element
-  try {
-    due = formatDate(task.due);
-  } catch (e) {
-    due = formatDate(new Date());
-  }
-  const checked = task.done ? "checked" : "";
   const task_element = `
-    <div class="card p-4 shadow-sm draggable-item ${checked}" draggable="true" id="${
-    task.id
-  }"> 
+    <div class="card p-4 shadow-sm draggable-item" draggable="true" id="${
+      task.id
+    }"> 
         <div class="hstack gap-4 align-items-center">
-            <input type="checkbox" class="form-check-input p-3" ${checked}>
+            <input type="checkbox" class="form-check-input p-3">
             <div>
                 <h3 class="fw-bold">${task.name}</h3>
                 <div class="hstack gap-3">
