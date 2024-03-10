@@ -3,7 +3,7 @@
 let tasks = [
   {
     name: "Homework",
-    due: new Date(2024, 2, 20),
+    due: null,
     duration: 60,
     done: false,
     id: Math.floor(Math.random() * 1000),
@@ -11,7 +11,7 @@ let tasks = [
   },
   {
     name: "Quiz",
-    due: new Date(2024, 2, 10),
+    due: new Date(2024, 2, 5),
     duration: 120,
     done: false,
     id: Math.floor(Math.random() * 1000),
@@ -88,22 +88,42 @@ function populateTasks() {
 // Add new task from form
 
 function addNewTaskFromBox() {
-  // get the name
+  //check the duration sign
+  let error = false;
+  let message = "";
+
+  // get values
   const name = document.querySelector("#new_task_input").value;
+  const due = document.querySelector("#date").value
+    ? new Date(document.querySelector("#date").value)
+    : new Date();
+  const duration = document.querySelector("#duration").value
+    ? document.querySelector("#duration").value
+    : 60;
 
-  if (name) {
-    // get the date
-    const due = document.querySelector("#date").value
-      ? new Date(document.querySelector("#date").value)
-      : new Date();
-    const duration = document.querySelector("#duration").value
-      ? document.querySelector("#duration").value
-      : 60;
+  if (!name) {
+    //remove the box
+    document
+      .querySelector(".cards")
+      .removeChild(document.querySelector("#new_task_card"));
+    return;
+  }
 
-    console.log(name, due, duration);
+  // duration error
+  if (duration < 0) {
+    error = true;
+    message = "Please provide a positive number..";
+  }
 
-    // add it to list
+  if (error) {
+    document.querySelector(".error-text").textContent = message;
+  } else {
+    // remove the box
+    document
+      .querySelector(".cards")
+      .removeChild(document.querySelector("#new_task_card"));
 
+    // add new task
     const new_task = {
       name: name,
       due: due,
@@ -115,13 +135,13 @@ function addNewTaskFromBox() {
     tasks.push(new_task);
     populateTasks();
   }
+
+  return !error;
 }
 
 // open new task box
 
 function openNewTaskBox() {
-  console.log("open new task box");
-
   document.querySelector(".cards").append(createNewTaskBox("new_task_card"));
 
   // make it focus
@@ -135,18 +155,22 @@ function openNewTaskBox() {
 
 function createTaskCard(task) {
   // create element
+  try {
+    due = formatDate(task.due);
+  } catch (e) {
+    due = formatDate(new Date());
+  }
+  const checked = task.done ? "checked" : "";
   const task_element = `
-    <div class="card p-4 shadow-sm draggable-item" draggable="true" id="${
-      task.id
-    }">
+    <div class="card p-4 shadow-sm draggable-item ${checked}" draggable="true" id="${
+    task.id
+  }"> 
         <div class="hstack gap-4 align-items-center">
-            <input type="checkbox" class="form-check-input p-3">
+            <input type="checkbox" class="form-check-input p-3" ${checked}>
             <div>
                 <h3 class="fw-bold">${task.name}</h3>
                 <div class="hstack gap-3">
-                    <h5><i class="bi bi-calendar3"></i> ${formatDate(
-                      task.due
-                    )}</h5>
+                    <h5><i class="bi bi-calendar3"></i> ${due}</h5>
                     <h5><i class="bi bi-clock"></i> ${formatDuration(
                       task.duration
                     )}</h5>
@@ -160,13 +184,6 @@ function createTaskCard(task) {
   const div = document.createElement("div");
   div.innerHTML = task_element;
 
-  // add checked
-  if (task.done) {
-    div.children[0].classList.add("checked");
-    //check all the checkboxes
-    div.children[0].querySelector("input").checked = true;
-  }
-
   return div.children[0];
 }
 
@@ -177,6 +194,7 @@ function createNewTaskBox(id) {
   const new_task_element = `
     <div id="${id}" class="card vstack gap-3 p-3 border border-3 border-primary">
         <input id="new_task_input" class="form-control border-0 fs-3" type='text' placeholder='Task name..'>
+        <h6 class="error-text"></h6>
         <div class="hstack gap-3">
             <input type="date" class="form-control" id="date">
             <input type="number" class="form-control" placeholder="Duration in minutes .." id="duration" step=10>
@@ -218,44 +236,7 @@ document.querySelectorAll(".btn-check").forEach((radio) => {
 // drag and drop
 
 function listenToDragAndDrop() {
-  let draggableItems = document.querySelectorAll(".draggable-item");
-  let dropZones = document.querySelectorAll(".dropZone");
-  let draggedItem;
-
-  // Add drag event listener to draggable items
-  draggableItems.forEach((item) => {
-    item.addEventListener("drag", function (e) {
-      draggedItem = e.target;
-    });
-  });
-
-  // Add dragover event listener to drop zone
-  dropZones.forEach((zone) => {
-    zone.addEventListener("dragover", function (e) {
-      e.preventDefault();
-      e.currentTarget.parentElement.classList.add("dropover");
-    });
-  });
-
-  // Add dragover event listener to drop zone
-  dropZones.forEach((zone) => {
-    zone.addEventListener("dragleave", function (e) {
-      e.preventDefault();
-      e.currentTarget.parentElement.classList.remove("dropover");
-    });
-  });
-
-  // Add drop event listener to drop zone
-  dropZones.forEach((zone) => {
-    zone.addEventListener("drop", function (e) {
-      const task = tasks.find((task) => task.id == draggedItem.id);
-      task.scheduled = zone.parentElement.id;
-      console.log(task.scheduled);
-      e.currentTarget.parentElement.classList.remove("dropover");
-      draggedItem = null;
-      populateTasks();
-    });
-  });
+  //TODO:Implement
 }
 
 ////////////////////// EVENT Handlers ////////////////////
@@ -263,12 +244,9 @@ function listenToDragAndDrop() {
 //checkbox changed
 
 function checkBoxChanged(e) {
-  // change the model
   const id = e.target.parentElement.parentElement.id;
-  const task = tasks.find((task) => task.id == id);
+  const task = tasks.find((e) => e.id == id);
   task.done = e.target.checked;
-
-  // change the view
   populateTasks();
 }
 
@@ -285,11 +263,10 @@ function newTaskButtonClicked(e) {
   } else {
     // already opened
     console.log("Apply");
-    button.innerText = "New Task";
-    addNewTaskFromBox();
-    document
-      .querySelector(".cards")
-      .removeChild(document.querySelector("#new_task_card"));
+    let added = addNewTaskFromBox();
+    if (added) {
+      button.innerText = "New Task";
+    }
   }
 }
 
@@ -315,11 +292,7 @@ function respondToKeyInputs() {
 // format date
 function formatDate(date) {
   return (
-    date.toLocaleString("default", {
-      month: "short",
-    }) +
-    " " +
-    date.getDate()
+    date.toLocaleString("default", { month: "short" }) + " " + date.getDate()
   );
 }
 
