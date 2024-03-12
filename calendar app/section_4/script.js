@@ -1,37 +1,55 @@
 ///////////////// MODEL /////////////////
 
-let tasks = [
-  {
-    name: "Homework",
-    due: new Date(2024, 2, 20),
-    duration: 60,
-    done: false,
-    id: Math.floor(Math.random() * 1000),
-    scheduled: "all_tasks",
-    timeSpent: 0,
-    doing: false,
-  },
-  {
-    name: "Quiz",
-    due: new Date(2024, 2, 10),
-    duration: 120,
-    done: false,
-    id: Math.floor(Math.random() * 1000),
-    scheduled: "all_tasks",
-    timeSpent: 0,
-    doing: false,
-  },
-  {
-    name: "Gym",
-    due: new Date(2024, 2, 5),
-    duration: 30,
-    done: false,
-    id: Math.floor(Math.random() * 1000),
-    scheduled: "today",
-    timeSpent: 0,
-    doing: false,
-  },
-];
+let tasks_json = `[{
+  "name": "Homework",
+  "due": "2024-02-20",
+  "duration": 60,
+  "done": false,
+  "id": 12345,
+  "scheduled": "all_tasks",
+  "timeSpent": 0,
+  "playing": false
+}]`;
+
+let tasks = JSON.parse(tasks_json, function (k, v) {
+  if (k == "due") {
+    return new Date(v);
+  }
+  return v;
+});
+
+// let tasks = [
+//   {
+//     name: "Homework",
+//     due: new Date(2024, 2, 20),
+//     duration: 60,
+//     done: false,
+//     id: Math.floor(Math.random() * 1000),
+//     scheduled: "all_tasks",
+//     timeSpent: 0,
+//     playing: false,
+//   },
+//   {
+//     name: "Quiz",
+//     due: new Date(2024, 2, 10),
+//     duration: 120,
+//     done: false,
+//     id: Math.floor(Math.random() * 1000),
+//     scheduled: "all_tasks",
+//     timeSpent: 0,
+//     playing: false,
+//   },
+//   {
+//     name: "Gym",
+//     due: new Date(2024, 2, 5),
+//     duration: 30,
+//     done: false,
+//     id: Math.floor(Math.random() * 1000),
+//     scheduled: "today",
+//     timeSpent: 0,
+//     playing: false,
+//   },
+// ];
 
 function addTask(name, due, duration) {
   tasks.push({
@@ -246,7 +264,30 @@ function listenToDragAndDrop() {
 // start button clicked
 
 function startTimerClicked(e) {
-  // TODO: Implement
+  const id =
+    e.target.parentElement.parentElement.parentElement.parentElement.id;
+
+  const task = tasks.find((t) => t.id == id);
+
+  if (!task.playing) {
+    timer = setInterval(() => {
+      task.timeSpent++;
+      populateTasks();
+    }, 1000);
+  } else {
+    clearInterval(timer);
+    timer = null;
+    populateTasks();
+  }
+
+  task.playing = !task.playing;
+  populateTasks();
+
+  // start thed timer
+  // keep track of each tasks time
+  // handle two states:
+  // // start from zero
+  // // timer is playing
 }
 
 //checkbox changed
