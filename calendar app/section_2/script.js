@@ -1,37 +1,53 @@
 ///////////////// MODEL /////////////////
 
-let tasks = [
+let tasks_json = `[
   {
-    name: "Homework",
-    due: new Date(2024, 2, 20),
-    duration: 60,
-    done: false,
-    id: Math.floor(Math.random() * 1000),
-    scheduled: "all_tasks",
-    timeSpent: 0,
-    doing: false,
-  },
-  {
-    name: "Quiz",
-    due: new Date(2024, 2, 10),
-    duration: 120,
-    done: false,
-    id: Math.floor(Math.random() * 1000),
-    scheduled: "all_tasks",
-    timeSpent: 0,
-    doing: false,
-  },
-  {
-    name: "Gym",
-    due: new Date(2024, 2, 5),
-    duration: 30,
-    done: false,
-    id: Math.floor(Math.random() * 1000),
-    scheduled: "today",
-    timeSpent: 0,
-    doing: false,
-  },
-];
+    "name": "Homework",
+    "due": "2024-02-12",
+    "duration": 60,
+    "done": true,
+    "id": 123,
+    "scheduled": "all_tasks",
+    "timer": 0
+  }
+]`;
+
+let tasks = JSON.parse(tasks_json, function (k, v) {
+  if (k == "due") {
+    return new Date(v);
+  }
+  return v;
+});
+
+// let tasks = [
+//   {
+//     name: "Homework",
+//     due: null,
+//     duration: 60,
+//     done: true,
+//     id: Math.floor(Math.random() * 1000),
+//     scheduled: "all_tasks",
+//     timer: 0,
+//   },
+//   {
+//     name: "Quiz",
+//     due: new Date(2024, 2, 5),
+//     duration: 120,
+//     done: false,
+//     id: Math.floor(Math.random() * 1000),
+//     scheduled: "all_tasks",
+//     timer: 0,
+//   },
+//   {
+//     name: "Gym",
+//     due: new Date(2024, 2, 5),
+//     duration: 30,
+//     done: false,
+//     id: Math.floor(Math.random() * 1000),
+//     scheduled: "today",
+//     timer: 0,
+//   },
+// ];
 
 function addTask(name, due, duration) {
   tasks.push({
@@ -61,8 +77,6 @@ function sortTasks(by) {
       break;
   }
 }
-
-let timer = null;
 
 //////////////////// DOM FUNCTIONS ////////////////////
 
@@ -97,22 +111,44 @@ function populateTasks() {
 // Add new task from form
 
 function addNewTaskFromBox() {
-  // get the name
+  //check the duration sign
+  let error = false;
+  let message = "";
+
+  // get values
   const name = document.querySelector("#new_task_input").value;
+  const due = document.querySelector("#date").value
+    ? new Date(document.querySelector("#date").value)
+    : new Date();
+  const duration = document.querySelector("#duration").value
+    ? document.querySelector("#duration").value
+    : 60;
 
-  if (name) {
-    // get the date
-    const due = document.querySelector("#date").value
-      ? new Date(document.querySelector("#date").value)
-      : new Date();
-    const duration = document.querySelector("#duration").value
-      ? document.querySelector("#duration").value
-      : 60;
+  // empty name
+  if (!name) {
+    //remove the box
+    document
+      .querySelector(".cards")
+      .removeChild(document.querySelector("#new_task_card"));
+    return;
+  }
 
-    console.log(name, due, duration);
+  // duration error
+  if (duration < 0) {
+    //TODO: Implement
+    error = true;
+    message = "Duration cannot be negative..";
+  }
 
-    // add it to list
+  if (error) {
+    document.querySelector(".error-text").textContent = message;
+  } else {
+    // remove the box
+    document
+      .querySelector(".cards")
+      .removeChild(document.querySelector("#new_task_card"));
 
+    // add new task
     const new_task = {
       name: name,
       due: due,
@@ -124,13 +160,13 @@ function addNewTaskFromBox() {
     tasks.push(new_task);
     populateTasks();
   }
+
+  return !error;
 }
 
 // open new task box
 
 function openNewTaskBox() {
-  console.log("open new task box");
-
   document.querySelector(".cards").append(createNewTaskBox("new_task_card"));
 
   // make it focus
@@ -143,13 +179,13 @@ function openNewTaskBox() {
 // create task html
 
 function createTaskCard(task) {
-  // create element
+  const cheked = task.done ? "checked" : "";
   const task_element = `
-    <div class="card p-4 shadow-sm draggable-item" draggable="true" id="${
-      task.id
-    }">
+    <div class="card p-4 shadow-sm draggable-item ${cheked}" id="${
+    task.id
+  }" draggable="true"> 
         <div class="hstack gap-4 align-items-center">
-            <input type="checkbox" class="form-check-input p-3">
+            <input type="checkbox" class="form-check-input p-3" ${cheked}>
             <div>
                 <h3 class="fw-bold">${task.name}</h3>
                 <div class="hstack gap-3">
@@ -159,11 +195,8 @@ function createTaskCard(task) {
                     <h5><i class="bi bi-clock"></i> ${formatDuration(
                       task.duration
                     )}</h5>
-                    <button class='timer btn ${
-                      task.playing ? "btn-primary" : "btn-light"
-                    }'>${!task.playing ? '<i class="bi bi-play"></i>' : ""} ${
-    task.timeSpent
-  }s</button>
+                    <h5 class="timer">${task.timer ? task.timer : ""}</h5>
+                    <button>start</button>
                 </div>
             </div>
         </div>
@@ -173,13 +206,6 @@ function createTaskCard(task) {
   // create node from html
   const div = document.createElement("div");
   div.innerHTML = task_element;
-
-  // add checked
-  if (task.done) {
-    div.children[0].classList.add("checked");
-    //check all the checkboxes
-    div.children[0].querySelector("input").checked = true;
-  }
 
   return div.children[0];
 }
@@ -191,6 +217,7 @@ function createNewTaskBox(id) {
   const new_task_element = `
     <div id="${id}" class="card vstack gap-3 p-3 border border-3 border-primary">
         <input id="new_task_input" class="form-control border-0 fs-3" type='text' placeholder='Task name..'>
+        <h6 class="error-text"></h6>
         <div class="hstack gap-3">
             <input type="date" class="form-control" id="date">
             <input type="number" class="form-control" placeholder="Duration in minutes .." id="duration" step=10>
@@ -216,13 +243,31 @@ document.querySelector("#new_task_btn").addEventListener("click", (e) => {
 
 function listenToCheckboxes() {
   document.querySelectorAll(".form-check-input").forEach((checkbox) => {
+    // listen to change
     checkbox.addEventListener("change", checkBoxChanged);
+
+    // stop prop
+    checkbox.addEventListener("click", (e) => {
+      console.log("checkbox clicked");
+      e.stopPropagation();
+    });
   });
 }
 
+// task click
+function listenToTaskClick() {}
+
 function listenToTimer() {
-  document.querySelectorAll(".card button.timer").forEach((button) => {
-    button.addEventListener("click", startTimerClicked);
+  document.querySelectorAll(".card button").forEach((button) => {
+    button.addEventListener("click", (e) => {
+      let id =
+        e.target.parentElement.parentElement.parentElement.parentElement.id;
+      task = tasks.find((t) => t.id == id);
+      setInterval(() => {
+        task.timer++;
+        console.log(task.timer);
+      }, 1000);
+    });
   });
 }
 
@@ -243,21 +288,14 @@ function listenToDragAndDrop() {
 
 ////////////////////// EVENT Handlers ////////////////////
 
-// start button clicked
-
-function startTimerClicked(e) {
-  // TODO: Implement
-}
-
 //checkbox changed
 
 function checkBoxChanged(e) {
-  // change the model
+  //TODO:Implement
   const id = e.target.parentElement.parentElement.id;
   const task = tasks.find((task) => task.id == id);
+  console.log(task);
   task.done = e.target.checked;
-
-  // change the view
   populateTasks();
 }
 
@@ -274,11 +312,10 @@ function newTaskButtonClicked(e) {
   } else {
     // already opened
     console.log("Apply");
-    button.innerText = "New Task";
-    addNewTaskFromBox();
-    document
-      .querySelector(".cards")
-      .removeChild(document.querySelector("#new_task_card"));
+    let added = addNewTaskFromBox();
+    if (added) {
+      button.innerText = "New Task";
+    }
   }
 }
 
@@ -303,13 +340,13 @@ function respondToKeyInputs() {
 
 // format date
 function formatDate(date) {
-  return (
-    date.toLocaleString("default", {
-      month: "short",
-    }) +
-    " " +
-    date.getDate()
-  );
+  try {
+    formatted =
+      date.toLocaleString("default", { month: "short" }) + " " + date.getDate();
+    return formatted;
+  } catch (e) {
+    return "undefined";
+  }
 }
 
 // format duration

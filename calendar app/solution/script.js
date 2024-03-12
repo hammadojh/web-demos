@@ -8,6 +8,8 @@ let tasks = [
     done: false,
     id: Math.floor(Math.random() * 1000),
     scheduled: "all_tasks",
+    timeSpent: 0,
+    doing: false,
   },
   {
     name: "Quiz",
@@ -16,6 +18,8 @@ let tasks = [
     done: false,
     id: Math.floor(Math.random() * 1000),
     scheduled: "all_tasks",
+    timeSpent: 0,
+    doing: false,
   },
   {
     name: "Gym",
@@ -24,6 +28,8 @@ let tasks = [
     done: false,
     id: Math.floor(Math.random() * 1000),
     scheduled: "today",
+    timeSpent: 0,
+    doing: false,
   },
 ];
 
@@ -56,6 +62,8 @@ function sortTasks(by) {
   }
 }
 
+let timer = null;
+
 //////////////////// DOM FUNCTIONS ////////////////////
 
 // populate tasks
@@ -83,6 +91,7 @@ function populateTasks() {
   // add event listeners
   listenToCheckboxes();
   listenToDragAndDrop();
+  listenToTimer();
 }
 
 // Add new task from form
@@ -150,6 +159,11 @@ function createTaskCard(task) {
                     <h5><i class="bi bi-clock"></i> ${formatDuration(
                       task.duration
                     )}</h5>
+                    <button class='timer btn ${
+                      task.playing ? "btn-primary" : "btn-light"
+                    }'>${!task.playing ? '<i class="bi bi-play"></i>' : ""} ${
+    task.timeSpent
+  }s</button>
                 </div>
             </div>
         </div>
@@ -206,6 +220,12 @@ function listenToCheckboxes() {
   });
 }
 
+function listenToTimer() {
+  document.querySelectorAll(".card button.timer").forEach((button) => {
+    button.addEventListener("click", startTimerClicked);
+  });
+}
+
 // radio buttons
 
 document.querySelectorAll(".btn-check").forEach((radio) => {
@@ -259,6 +279,34 @@ function listenToDragAndDrop() {
 }
 
 ////////////////////// EVENT Handlers ////////////////////
+
+// start button clicked
+
+function startTimerClicked(e) {
+  let task = tasks.find(
+    (t) =>
+      t.id ==
+      e.target.parentElement.parentElement.parentElement.parentElement.id
+  );
+
+  if (task.playing) {
+    //pause
+    e.target.classList.remove("playing");
+    clearInterval(timer);
+    timer = null;
+    task.playing = false;
+    populateTasks();
+  } else {
+    //start
+    e.target.classList.add("playing");
+    populateTasks();
+    task.playing = true;
+    timer = setInterval(() => {
+      task.timeSpent++;
+      populateTasks();
+    }, 1000);
+  }
+}
 
 //checkbox changed
 
