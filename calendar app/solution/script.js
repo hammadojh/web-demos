@@ -1,37 +1,25 @@
 ///////////////// MODEL /////////////////
 
-let tasks = [
+let tasks_json = `[
   {
-    name: "Homework",
-    due: new Date(2024, 2, 20),
-    duration: 60,
-    done: false,
-    id: Math.floor(Math.random() * 1000),
-    scheduled: "all_tasks",
-    timeSpent: 0,
-    doing: false,
-  },
-  {
-    name: "Quiz",
-    due: new Date(2024, 2, 10),
-    duration: 120,
-    done: false,
-    id: Math.floor(Math.random() * 1000),
-    scheduled: "all_tasks",
-    timeSpent: 0,
-    doing: false,
-  },
-  {
-    name: "Gym",
-    due: new Date(2024, 2, 5),
-    duration: 30,
-    done: false,
-    id: Math.floor(Math.random() * 1000),
-    scheduled: "today",
-    timeSpent: 0,
-    doing: false,
-  },
-];
+    "name": "Homework",
+    "due": "2024-02-12",
+    "duration": 60,
+    "done": false,
+    "id": 123,
+    "playing":false,
+    "scheduled": "all_tasks",
+    "timer": 0,
+    "timeSpent":0
+  }
+]`;
+
+let tasks = JSON.parse(tasks_json, function (k, v) {
+  if (k == "due") {
+    return new Date(v);
+  }
+  return v;
+});
 
 function addTask(name, due, duration) {
   tasks.push({
@@ -97,33 +85,59 @@ function populateTasks() {
 // Add new task from form
 
 function addNewTaskFromBox() {
-  // get the name
+  //check the duration sign
+  let error = false;
+  let message = "";
+
+  // get values
   const name = document.querySelector("#new_task_input").value;
+  const due = document.querySelector("#date").value
+    ? new Date(document.querySelector("#date").value)
+    : new Date();
+  const duration = document.querySelector("#duration").value
+    ? document.querySelector("#duration").value
+    : 60;
 
-  if (name) {
-    // get the date
-    const due = document.querySelector("#date").value
-      ? new Date(document.querySelector("#date").value)
-      : new Date();
-    const duration = document.querySelector("#duration").value
-      ? document.querySelector("#duration").value
-      : 60;
+  // empty name
+  if (!name) {
+    document
+      .querySelector(".cards")
+      .removeChild(document.querySelector("#new_task_card"));
+    return;
+  }
 
-    console.log(name, due, duration);
+  // duration error
+  if (duration < 0) {
+    error = true;
+    message = "Duration cannot be negative..";
+  }
 
-    // add it to list
+  if (error) {
+    document.querySelector(".error-text").textContent = message;
+  } else {
+    // remove the box
+    document
+      .querySelector(".cards")
+      .removeChild(document.querySelector("#new_task_card"));
 
+    // add new task
     const new_task = {
       name: name,
       due: due,
       duration: duration,
       done: false,
       id: Math.floor(Math.random() * 1000),
+      playing: false,
+      scheduled: "all_tasks",
+      timer: 0,
+      timeSpent: 0
     };
 
     tasks.push(new_task);
     populateTasks();
   }
+
+  return !error;
 }
 
 // open new task box
@@ -145,8 +159,7 @@ function openNewTaskBox() {
 function createTaskCard(task) {
   // create element
   const task_element = `
-    <div class="card p-4 shadow-sm draggable-item" draggable="true" id="${
-      task.id
+    <div class="card p-4 shadow-sm draggable-item" draggable="true" id="${task.id
     }">
         <div class="hstack gap-4 align-items-center">
             <input type="checkbox" class="form-check-input p-3">
@@ -154,16 +167,14 @@ function createTaskCard(task) {
                 <h3 class="fw-bold">${task.name}</h3>
                 <div class="hstack gap-3">
                     <h5><i class="bi bi-calendar3"></i> ${formatDate(
-                      task.due
-                    )}</h5>
+      task.due
+    )}</h5>
                     <h5><i class="bi bi-clock"></i> ${formatDuration(
-                      task.duration
-                    )}</h5>
-                    <button class='timer btn ${
-                      task.playing ? "btn-primary" : "btn-light"
-                    }'>${!task.playing ? '<i class="bi bi-play"></i>' : ""} ${
-    task.timeSpent
-  }s</button>
+      task.duration
+    )}</h5>
+                    <button class='timer btn ${task.playing ? "btn-primary" : "btn-light"
+    }'>${!task.playing ? '<i class="bi bi-play"></i>' : ""} ${task.timeSpent
+    }s</button>
                 </div>
             </div>
         </div>
@@ -334,10 +345,12 @@ function newTaskButtonClicked(e) {
     // already opened
     console.log("Apply");
     button.innerText = "New Task";
-    addNewTaskFromBox();
-    document
-      .querySelector(".cards")
-      .removeChild(document.querySelector("#new_task_card"));
+    // already opened
+    console.log("Apply");
+    let added = addNewTaskFromBox();
+    if (added) {
+      button.innerText = "New Task";
+    }
   }
 }
 

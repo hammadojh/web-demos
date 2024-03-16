@@ -19,36 +19,6 @@ let tasks = JSON.parse(tasks_json, function (k, v) {
   return v;
 });
 
-// let tasks = [
-//   {
-//     name: "Homework",
-//     due: null,
-//     duration: 60,
-//     done: true,
-//     id: Math.floor(Math.random() * 1000),
-//     scheduled: "all_tasks",
-//     timer: 0,
-//   },
-//   {
-//     name: "Quiz",
-//     due: new Date(2024, 2, 5),
-//     duration: 120,
-//     done: false,
-//     id: Math.floor(Math.random() * 1000),
-//     scheduled: "all_tasks",
-//     timer: 0,
-//   },
-//   {
-//     name: "Gym",
-//     due: new Date(2024, 2, 5),
-//     duration: 30,
-//     done: false,
-//     id: Math.floor(Math.random() * 1000),
-//     scheduled: "today",
-//     timer: 0,
-//   },
-// ];
-
 function addTask(name, due, duration) {
   tasks.push({
     name: name,
@@ -126,7 +96,6 @@ function addNewTaskFromBox() {
 
   // empty name
   if (!name) {
-    //remove the box
     document
       .querySelector(".cards")
       .removeChild(document.querySelector("#new_task_card"));
@@ -135,7 +104,6 @@ function addNewTaskFromBox() {
 
   // duration error
   if (duration < 0) {
-    //TODO: Implement
     error = true;
     message = "Duration cannot be negative..";
   }
@@ -181,20 +149,19 @@ function openNewTaskBox() {
 function createTaskCard(task) {
   const cheked = task.done ? "checked" : "";
   const task_element = `
-    <div class="card p-4 shadow-sm draggable-item ${cheked}" id="${
-    task.id
-  }" draggable="true"> 
+    <div class="card p-4 shadow-sm draggable-item ${cheked}" id="${task.id
+    }" draggable="true"> 
         <div class="hstack gap-4 align-items-center">
             <input type="checkbox" class="form-check-input p-3" ${cheked}>
             <div>
                 <h3 class="fw-bold">${task.name}</h3>
                 <div class="hstack gap-3">
                     <h5><i class="bi bi-calendar3"></i> ${formatDate(
-                      task.due
-                    )}</h5>
+      task.due
+    )}</h5>
                     <h5><i class="bi bi-clock"></i> ${formatDuration(
-                      task.duration
-                    )}</h5>
+      task.duration
+    )}</h5>
                     <h5 class="timer">${task.timer ? task.timer : ""}</h5>
                     <button>start</button>
                 </div>
@@ -255,7 +222,7 @@ function listenToCheckboxes() {
 }
 
 // task click
-function listenToTaskClick() {}
+function listenToTaskClick() { }
 
 function listenToTimer() {
   document.querySelectorAll(".card button").forEach((button) => {
