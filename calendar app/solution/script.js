@@ -6,7 +6,7 @@ let tasks_json = `[
     "due": "2024-02-12",
     "duration": 60,
     "done": false,
-    "id": 123,
+    "_id": 123,
     "playing":false,
     "scheduled": "all_tasks",
     "timer": 0,
@@ -85,26 +85,32 @@ function populateTasks() {
 // Add new task from form
 
 function addNewTaskFromBox() {
-  //check the duration sign
+
+  // track errors 
   let error = false;
   let message = "";
 
   // get values
   const name = document.querySelector("#new_task_input").value;
-  const due = document.querySelector("#date").value
-    ? new Date(document.querySelector("#date").value)
-    : new Date();
-  const duration = document.querySelector("#duration").value
-    ? document.querySelector("#duration").value
-    : 60;
 
   // empty name
   if (!name) {
     document
       .querySelector(".cards")
       .removeChild(document.querySelector("#new_task_card"));
-    return;
+    return true;
   }
+
+  // check for special characters
+  // re = /^[\w\s]+$/;
+  // if (!re.test(name)) {
+  //   error = true;
+  //   message = "Name cannot contain special characters..";
+  // }
+
+  const duration = document.querySelector("#duration").value
+    ? document.querySelector("#duration").value
+    : 60;
 
   // duration error
   if (duration < 0) {
@@ -112,8 +118,19 @@ function addNewTaskFromBox() {
     message = "Duration cannot be negative..";
   }
 
+  const due = document.querySelector("#date").value
+    ? new Date(document.querySelector("#date").value)
+    : new Date();
+
+  // check if date is in the past
+  if (due < new Date()) {
+    error = true;
+    message = "Due date cannot be in the past..";
+  }
+
   if (error) {
     document.querySelector(".error-text").textContent = message;
+    return false;
   } else {
     // remove the box
     document
@@ -159,7 +176,7 @@ function openNewTaskBox() {
 function createTaskCard(task) {
   // create element
   const task_element = `
-    <div class="card p-4 shadow-sm draggable-item" draggable="true" id="${task.id
+    <div class="card p-4 shadow-sm draggable-item" draggable="true" id="${task._id
     }">
         <div class="hstack gap-4 align-items-center">
             <input type="checkbox" class="form-check-input p-3">
@@ -188,7 +205,6 @@ function createTaskCard(task) {
   // add checked
   if (task.done) {
     div.children[0].classList.add("checked");
-    //check all the checkboxes
     div.children[0].querySelector("input").checked = true;
   }
 
@@ -202,6 +218,7 @@ function createNewTaskBox(id) {
   const new_task_element = `
     <div id="${id}" class="card vstack gap-3 p-3 border border-3 border-primary">
         <input id="new_task_input" class="form-control border-0 fs-3" type='text' placeholder='Task name..'>
+        <h5 class="error-text text-danger"></h5>
         <div class="hstack gap-3">
             <input type="date" class="form-control" id="date">
             <input type="number" class="form-control" placeholder="Duration in minutes .." id="duration" step=10>
@@ -216,6 +233,66 @@ function createNewTaskBox(id) {
 }
 
 ////////////////////// EVENT Listeners ////////////////////
+
+window.addEventListener('load', function (event) {
+  fetch("http://localhost:3010/tasks")
+    .then((response) => { return response.text() })
+    .then((data) => {
+      let t = JSON.parse(data, function (k, v) {
+        if (k == "due") {
+          return new Date(v);
+        }
+        return v;
+      });
+      tasks = t;
+      populateTasks();
+      console.log(data)
+    })
+    .catch((error) => {
+      console.log(error)
+    })
+});
+
+// window.addEventListener('load', async (event) => {
+//   let response = await fetch("http://localhost:3010/tasks");
+//   let data = await response.text();
+//   try {
+//     tasks = JSON.parse(data, function (k, v) {
+//       if (k == "due") {
+//         return new Date(v);
+//       }
+//       return v;
+//     });
+//     populateTasks();
+//   }catch(e){
+//     console.log(e)
+//   }
+// });
+
+// closing the window
+
+// window.addEventListener('beforeunload', function (event) {
+//   // if the form is open save the form information
+//   if (adding) {
+//     localStorage.setItem("new_task_input", document.querySelector("#new_task_input").value);
+//     localStorage.setItem("date", document.querySelector("#date").value);
+//     localStorage.setItem("duration", document.querySelector("#duration").value);
+//     localStorage.setItem("adding", "true");
+//   }
+// });
+
+// load the form information
+
+// window.addEventListener('load', function (event) {
+//   if (localStorage.getItem("adding") == "true") {
+//     openNewTaskBox();
+//     document.querySelector("#new_task_input").value = localStorage.getItem("new_task_input");
+//     document.querySelector("#date").value = localStorage.getItem("date");
+//     document.querySelector("#duration").value = localStorage.getItem("duration");
+//     adding = true;
+//   }
+// });
+
 
 // New task button
 
@@ -296,7 +373,7 @@ function listenToDragAndDrop() {
 function startTimerClicked(e) {
   let task = tasks.find(
     (t) =>
-      t.id ==
+      t._id ==
       e.target.parentElement.parentElement.parentElement.parentElement.id
   );
 
@@ -324,7 +401,7 @@ function startTimerClicked(e) {
 function checkBoxChanged(e) {
   // change the model
   const id = e.target.parentElement.parentElement.id;
-  const task = tasks.find((task) => task.id == id);
+  const task = tasks.find((task) => task._id == id);
   task.done = e.target.checked;
 
   // change the view
@@ -333,23 +410,21 @@ function checkBoxChanged(e) {
 
 // new task button clicked
 
+let adding = false;
 function newTaskButtonClicked(e) {
   const button = e.target;
-
-  if (button.innerText == "New Task") {
+  if (!adding) {
     // open new task box
-    console.log("New Task");
-    button.innerText = "Apply";
+    adding = true;
+    button.textContent = "Apply";
     openNewTaskBox();
   } else {
     // already opened
-    console.log("Apply");
-    button.innerText = "New Task";
-    // already opened
-    console.log("Apply");
     let added = addNewTaskFromBox();
     if (added) {
-      button.innerText = "New Task";
+      button.textContent = "New Task";
+      adding = false;
+      localStorage.setItem("adding", adding);
     }
   }
 }
