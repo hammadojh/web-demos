@@ -102,11 +102,11 @@ function addNewTaskFromBox() {
   }
 
   // check for special characters
-  // re = /^[\w\s]+$/;
-  // if (!re.test(name)) {
-  //   error = true;
-  //   message = "Name cannot contain special characters..";
-  // }
+  re = /^[\w\s]+$/;
+  if (!re.test(name)) {
+    error = true;
+    message = "Name cannot contain special characters..";
+  }
 
   const duration = document.querySelector("#duration").value
     ? document.querySelector("#duration").value
@@ -234,29 +234,50 @@ function createNewTaskBox(id) {
 
 ////////////////////// EVENT Listeners ////////////////////
 
-window.addEventListener('load', function (event) {
-  fetch("http://localhost:3010/tasks")
-    .then((response) => { return response.text() })
-    .then((data) => {
-      let t = JSON.parse(data, function (k, v) {
-        if (k == "due") {
-          return new Date(v);
-        }
-        return v;
-      });
-      tasks = t;
-      populateTasks();
-      console.log(data)
-    })
-    .catch((error) => {
-      console.log(error)
-    })
-});
+async function f() {
+  let a = await 5;
+  console.log(a)
+}
+
+f()
+
+async function getDataFromDB() {
+  try {
+    console.log("called..")
+    let response = await fetch("http://localhost:3010/tasks")
+    let data = await response.json()
+    console.log(data)
+  } catch (e) {
+    console.log(e)
+  }
+}
+
+getDataFromDB()
+
+
+// window.addEventListener('load', function (event) {
+//   fetch("http://localhost:3010/tasks") // return Promise()
+//     .then((response) => { return response.text() })
+//     .then((data) => {
+//       let t = JSON.parse(data, function (k, v) {
+//         if (k == "due") {
+//           return new Date(v);
+//         }
+//         return v;
+//       });
+//       tasks = t;
+//       populateTasks();
+//       console.log(data)
+//     })
+//     .catch((error) => {
+//       console.log(error)
+//     })
+// });
 
 // window.addEventListener('load', async (event) => {
-//   let response = await fetch("http://localhost:3010/tasks");
-//   let data = await response.text();
 //   try {
+//     let response = await fetch("http://localhost:3010/tasks");
+//     let data = await response.text();
 //     tasks = JSON.parse(data, function (k, v) {
 //       if (k == "due") {
 //         return new Date(v);
@@ -264,34 +285,34 @@ window.addEventListener('load', function (event) {
 //       return v;
 //     });
 //     populateTasks();
-//   }catch(e){
+//   } catch (e) {
 //     console.log(e)
 //   }
 // });
 
 // closing the window
 
-// window.addEventListener('beforeunload', function (event) {
-//   // if the form is open save the form information
-//   if (adding) {
-//     localStorage.setItem("new_task_input", document.querySelector("#new_task_input").value);
-//     localStorage.setItem("date", document.querySelector("#date").value);
-//     localStorage.setItem("duration", document.querySelector("#duration").value);
-//     localStorage.setItem("adding", "true");
-//   }
-// });
+window.addEventListener('beforeunload', function (event) {
+  // if the form is open save the form information
+  if (adding) {
+    localStorage.setItem("new_task_input", document.querySelector("#new_task_input").value);
+    localStorage.setItem("date", document.querySelector("#date").value);
+    localStorage.setItem("duration", document.querySelector("#duration").value);
+    localStorage.setItem("adding", "true");
+  }
+});
 
 // load the form information
 
-// window.addEventListener('load', function (event) {
-//   if (localStorage.getItem("adding") == "true") {
-//     openNewTaskBox();
-//     document.querySelector("#new_task_input").value = localStorage.getItem("new_task_input");
-//     document.querySelector("#date").value = localStorage.getItem("date");
-//     document.querySelector("#duration").value = localStorage.getItem("duration");
-//     adding = true;
-//   }
-// });
+window.addEventListener('load', function (event) {
+  if (localStorage.getItem("adding") == "true") {
+    openNewTaskBox();
+    document.querySelector("#new_task_input").value = localStorage.getItem("new_task_input");
+    document.querySelector("#date").value = localStorage.getItem("date");
+    document.querySelector("#duration").value = localStorage.getItem("duration");
+    adding = true;
+  }
+});
 
 
 // New task button
