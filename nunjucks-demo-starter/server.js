@@ -15,7 +15,7 @@ const tasks = [
 const user = users[1]
 
 //serve public folder
-app.use(app.express("public"))
+app.use(express.static("public"))
 
 const PORT = 3000
 app.listen(PORT, function () {
