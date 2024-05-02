@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To Do List App</title>
+</head>
+
+<body>
+    <nav>
+        <h4> Todo List App </h4>
+        <ul>
+            <li> Home </li>
+            {% if user %}
+            <li> Profile </li>
+            {% endif %}
+            <li> logout </li>
+        </ul>
+    </nav>
+    {%block content %}
+    {% endblock %}
+</body>
+
+</html>
