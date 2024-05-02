@@ -1,0 +1,15 @@
+{% extends "base.njk" %}
+
+{%block content%}
+
+<h1> Login to your account <h1>
+<form method="post" action="/login">
+    <input type="text" name="id" placeholder="username">
+    <input type="submit">
+</form>
+
+{% if errorMessage  %}
+<h5 style="color:red"> {{ errorMessage }} </h5>
+{% endif %}
+
+{% endblock %}
